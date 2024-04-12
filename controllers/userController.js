@@ -5,14 +5,15 @@ const sendTokenResponse=(user,statusCode,res)=>{
     //create token
     const token=user.getSignedJwtToken();
         const options={
-        expires:new Date(Date.now()+process.env.JWT_COOKIE_EXPIRE*24*60*60*1000),
-        httpOnly:true
-    };
+            expires:new Date(Date.now()+process.env.JWT_COOKIE_EXPIRE*24*60*60*1000),
+            httpOnly:true
+        };
     // in case of production
     if(process.env.NODE_ENV==='production'){
         options.secure=true;
     }
     res.status(statusCode)
+        .cookie('token',token,options)
         .json({
             success: true,
             _id    : user._id,
@@ -27,17 +28,19 @@ const sendTokenResponse=(user,statusCode,res)=>{
 //@access Public
 exports.register = async(req,res) =>{
     try{
-        const {name , email , password , role} = req.body;
+        const {name , email , password , role , tel} = req.body;
         const user = await User.create({
             name,
             email,
             password,
-            role
+            role,
+            tel
         });
         sendTokenResponse(user,200,res);
     }catch(err){
         res.status(400).json({
-            success : false
+            success : false,
+            error : err.message
         });
         console.log(err.stack);
     }

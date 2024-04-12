@@ -4,6 +4,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connectDB = require("./config/db");
 
+
+// import routers
+const userRouter = require("./routes/user");
+
 dotenv.config({"path":'./config/config.env'})
 
 const app = express()
@@ -22,6 +26,9 @@ app.get('/',(_,res)=>{
         message : "Massagereservation api is ready to serve u"
     });
 })
+
+// app routing
+app.use("/api/v1/user",userRouter);
 
 const PORT = process.env.PORT || 5000
 const server = app.listen(PORT , console.log('Server is running in' , process.env.NODE_ENV , 'mode on port' , process.env.PORT));
