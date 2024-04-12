@@ -23,28 +23,18 @@ const MassageShopSchema = new mongoose.Schema({
     tel:{
         type:String
     },
-    open_close_time:{
-        type:String,
-        required:[true , 'Please add a open&close time']
-    }
+    open_time:{
+        type: Date,
+        required:[true , 'Please add an open time']
+    },
+    close_time:{
+        type: Date,
+        required:[true , 'Please add a close time']
+    },
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
 });
-
-// HospitalSchema.virtual('appointments',{
-//     ref:'Appointment',
-//     localField:'_id',
-//     foreignField:'hospital',
-//     justOne:false
-// });
-
-// HospitalSchema.pre('deleteOne',{document:true,  query:false}, async function(next){
-//     console.log(`Appointment begin removed from hospial ${this._id}`)
-//     await this.model('Appoitment').deleteMany({hospital:this._id})
-//     next();
-// })
-
 
 
 module.exports = mongoose.model('MassageShop' , MassageShopSchema);
