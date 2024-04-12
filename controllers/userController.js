@@ -69,7 +69,7 @@ exports.login = async(req,res,next) =>{
         if(!isMatch){
             return res.status(400).json({
                 success : false,
-                msg : "Invalid credentials"
+                msg : "wrong password"
             })
         }
         sendTokenResponse(user,200,res);
@@ -77,6 +77,44 @@ exports.login = async(req,res,next) =>{
         res.status(401).json({
             success : false,
             message : "login failed"
+        })
+    }
+};
+
+//@desc  change password 
+//@route POST /api/v1/user/change-password
+//@access Public
+exports.changePassword = async(req,res,next) =>{
+    try{
+        const {email , password , newpassword } = req.body;
+        if(!email || !password){
+            return res.status(400).json({
+                success : false,
+                msg : "Please enter an email and password"
+            })
+        }
+        const user = await User.findOne({email}).select('+password');
+        if(!user){
+            return res.status(400).json({
+            success : false,
+            msg : "Invalid credentials"
+        })
+        }
+        const isMatch = await user.matchPassword(password);
+        if(!isMatch){
+            return res.status(400).json({
+                success : false,
+                msg : "wrong password"
+            })
+        }
+        // change password 
+        user.password = newpassword; // Assign new password
+        await user.save(); // Save the updated user data
+        sendTokenResponse(user,200,res);
+    }catch(err){
+        res.status(401).json({
+            success : false,
+            message : "change password failed"
         })
     }
 };
