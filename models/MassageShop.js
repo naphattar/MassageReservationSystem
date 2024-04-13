@@ -23,13 +23,21 @@ const MassageShopSchema = new mongoose.Schema({
     tel:{
         type:String
     },
-    open_time:{
-        type: Date,
-        required:[true , 'Please add an open time']
+    open_time: {
+        type: String,
+        required: [true, 'Please add an open time'],
+        match: [
+            /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/,
+            'Please add a valid time in the format "00:00" to "23:59"',
+        ],
     },
     close_time:{
-        type: Date,
-        required:[true , 'Please add a close time']
+        type: String,
+        required:[true , 'Please add a close time'],
+        match: [
+            /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/,
+            'Please add a valid time in the format "00:00" to "23:59"',
+        ],
     },
 },{
     toJSON:{virtuals:true},

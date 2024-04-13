@@ -7,7 +7,6 @@ const UserSchema = mongoose.Schema({
         type : String,
         require : [true , "Please add a name"]
     },
-    
     email : {
         type : String,
         require : [true , "Please add an email"],
@@ -24,13 +23,10 @@ const UserSchema = mongoose.Schema({
     tel: {
         type: String,
         required: [true, 'Please add a telephone number'],
-        validate: {
-          validator: function (value) {
-            const regex = /^\d{3}-\d{3}-\d{4}$/;
-            return regex.test(value);
-          },
-          message: 'Please add a valid telephone number in the format "xxx-xxx-xxxx"',
-        },
+        match : [
+            /^\d{3}-\d{3}-\d{4}$/,
+            'Please add a valid telephone number in the format "xxx-xxx-xxxx"'
+        ],
       },
     password : {
         type : String,
@@ -59,4 +55,5 @@ UserSchema.methods.getSignedJwtToken = function(){
 UserSchema.methods.matchPassword = async function(enteredPassword){
     return await bcrypt.compare(enteredPassword,this.password);
 }
+
 module.exports = mongoose.model('User',UserSchema);

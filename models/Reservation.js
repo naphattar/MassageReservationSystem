@@ -11,10 +11,26 @@ const ReservationSchema = new mongoose.Schema({
         required : [true, 'Please add a massage_shop_name'],
         trim:true, 
     },
-    date : {
+    reservation_date : {
         type : Date,
         required : [true, 'Please add a reservation date'],
-    }
+    },
+    reservation_starttime: {
+        type: String,
+        required: [true, 'Please add an open time'],
+        match: [
+            /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/,
+            'Please add a valid time in the format "00:00" to "23:59"',
+        ],
+    },
+    reservation_endtime:{
+        type: String,
+        required:[true , 'Please add a close time'],
+        match: [
+            /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/,
+            'Please add a valid time in the format "00:00" to "23:59"',
+        ],
+    },
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
