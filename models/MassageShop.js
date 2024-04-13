@@ -45,4 +45,4 @@ const MassageShopSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('MassageShop' , MassageShopSchema);
+module.exports = {MassageShop : mongoose.model('MassageShop' , MassageShopSchema),MassageShopSchema};

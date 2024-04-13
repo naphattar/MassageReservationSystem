@@ -6,9 +6,9 @@ const ReservationSchema = new mongoose.Schema({
         required : [true, 'Please add a reserver_email'],
         trim:true, 
     },
-    massage_shop_name : {
+    massageshop_name : {
         type : String,
-        required : [true, 'Please add a massage_shop_name'],
+        required : [true, 'Please add a massageshop_name'],
         trim:true, 
     },
     reservation_date : {
@@ -37,6 +37,6 @@ const ReservationSchema = new mongoose.Schema({
 });
 
 // 3 propoties combine must be unique
-ReservationSchema.index({ reserver_email: 1, massage_shop_name: 1, date: 1 }, { unique: true });
+ReservationSchema.index({ reserver_email: 1, massageshop_name: 1, date: 1 }, { unique: true });
 
-module.exports = mongoose.model('Reservation' , ReservationSchema);
+module.exports =  {Reservation : mongoose.model('Reservation' , ReservationSchema) , ReservationSchema};
