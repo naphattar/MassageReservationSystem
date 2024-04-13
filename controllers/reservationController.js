@@ -1,12 +1,12 @@
-const Reservation = require("../models/Reservation");
-const Massageshop = require("../models/MassageShop");
+const {Reservation} = require("../models/Reservation");
+const {MassageShop} = require("../models/MassageShop");
 const {countUserReservationByUserEmail, checkReservationTime}= require("../utills/reservationUtill");
 
 //@desc login user reserve a massageshop
 //@route POST /api/v1/reservation/
 //@access Private
 exports.createReservation = async(req,res,next)=>{
-    const {massage_shop_name ,reservation_date , startTime , endTime} = req.body;
+    const {massageshop_name ,reservation_date , start_time , end_time} = req.body;
     const user = req.user;
     // check user 
     if(!user){
@@ -17,7 +17,7 @@ exports.createReservation = async(req,res,next)=>{
         return;
     }
     // check request body
-    if(!massage_shop_name || !reservation_date || !startTime || !endTime){
+    if((!massageshop_name) || (!reservation_date) ||  (!start_time) || (!end_time)){
         res.status(400).json({
             success : false,
             message : "invalid request body"
@@ -34,11 +34,11 @@ exports.createReservation = async(req,res,next)=>{
         return;
     }
     // check the massageshop_name 
-    const massageshop = await Massageshop.findOne({ massageshop_name: massage_shop_name });
+    const massageshop = await MassageShop.findOne({ massageshop_name: massageshop_name });
     if(!massageshop){
         res.status(400).json({
             success : false,
-            message : `Massageshop : ${user.name} is not existed in this reservation system`
+            message : `Massageshop : ${massageshop_name} is not existed in this reservation system`
         });
         return;
     }
@@ -46,11 +46,10 @@ exports.createReservation = async(req,res,next)=>{
     if(!checkReservationTime(startTime,endTime,massageshop)){
         res.status(400).json({
             success : false,
-            message : `Massageshop : ${user.name} is not available in this reservation time`
+            message : `Massageshop : ${massageshop_name} is not available in this reservation time`
         });
         return;
     };
-    
     try{
         // validate reservation_date e.g., 'YYYY-MM-DD
         const isValidDate = !isNaN(Date.parse(reservation_date));
@@ -63,8 +62,10 @@ exports.createReservation = async(req,res,next)=>{
         // create new reservation
         const reservation = await Reservation.create({
             reserver_email : user.email,
-            massage_shop_name : massage_shop_name,
-            reservation_date : new Date(reservation_date)
+            massageshop_name : massageshop_name,
+            reservation_date : new Date(reservation_date),
+            reservation_starttime : start_time,
+            reservation_endtime : end_time
         });
 
         res.status(201).json({

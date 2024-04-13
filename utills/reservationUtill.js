@@ -1,4 +1,4 @@
-const Reservation = require("../models/Reservation");
+const {Reservation} = require("../models/Reservation");
 const { isTimeGreater } = require("./timeUtill");
 
 const countUserReservationByUserEmail = async(userEmail) => {
