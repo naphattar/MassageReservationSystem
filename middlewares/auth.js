@@ -3,9 +3,13 @@ const User = require("../models/User");
 
 exports.protect = async(req,res,next) =>{
     let token;
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        token = req.headers.authorization.split(' ')[1];
-
+    // check token from cookie first then check the auth header
+    if (req.cookies && req.cookies.token) {
+        token = req.cookies.token;
+    } else{
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+            token = req.headers.authorization.split(' ')[1];       
+        }
     }
     if(!token || token=='null'){
         return res.status(401).json({
@@ -15,7 +19,6 @@ exports.protect = async(req,res,next) =>{
     }
     try{
         const decoded = jwt.verify(token , process.env.JWT_SECRET);
-        console.log(decoded);
         req.user = await User.findById(decoded.id);
         next();
     }catch(err){
