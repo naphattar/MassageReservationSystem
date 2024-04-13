@@ -1,4 +1,5 @@
 const Reservation = require("../models/Reservation");
+const { isTimeGreater } = require("./timeUtill");
 
 const countUserReservationByUserEmail = async(userEmail) => {
     try {
@@ -10,4 +11,8 @@ const countUserReservationByUserEmail = async(userEmail) => {
     }
 }
 
-module.exports = countUserReservationByUserEmail;
+const checkReservationTime  = (startTime,endTime,massageShop) =>{
+    return (isTimeGreater(startTime,massageShop.open_time) && isTimeGreater(massageShop.close_time,endTime));
+}
+
+module.exports = {countUserReservationByUserEmail , checkReservationTime};

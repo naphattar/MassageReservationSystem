@@ -1,18 +1,26 @@
 const Reservation = require("../models/Reservation");
 const Massageshop = require("../models/MassageShop");
-const countUserReservationByUserEmail = require("../utills/reservationUtill");
+const {countUserReservationByUserEmail, checkReservationTime}= require("../utills/reservationUtill");
 
 //@desc login user reserve a massageshop
 //@route POST /api/v1/reservation/
 //@access Private
 exports.createReservation = async(req,res,next)=>{
-    const {massage_shop_name ,reservation_date} = req.body;
+    const {massage_shop_name ,reservation_date , startTime , endTime} = req.body;
     const user = req.user;
     // check user 
     if(!user){
         res.status(401).json({
             success : false,
             message : "unauthorized"
+        });
+        return;
+    }
+    // check request body
+    if(!massage_shop_name || !reservation_date || !startTime || !endTime){
+        res.status(400).json({
+            success : false,
+            message : "invalid request body"
         });
         return;
     }
@@ -34,6 +42,15 @@ exports.createReservation = async(req,res,next)=>{
         });
         return;
     }
+    // check the starttime and endtime 
+    if(!checkReservationTime(startTime,endTime,massageshop)){
+        res.status(400).json({
+            success : false,
+            message : `Massageshop : ${user.name} is not available in this reservation time`
+        });
+        return;
+    };
+    
     try{
         // validate reservation_date e.g., 'YYYY-MM-DD
         const isValidDate = !isNaN(Date.parse(reservation_date));
