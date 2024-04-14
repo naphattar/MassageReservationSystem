@@ -8,6 +8,7 @@ const {xss}=require('express-xss-sanitizer')
 const rateLimit=require('express-rate-limit');
 const hpp=require('hpp')
 const connectDB = require("./config/db");
+const homepage = require("./mocks/homepage");
 
 
 // import routers
@@ -38,9 +39,8 @@ app.use(hpp());
 
 // home route
 app.get('/',(_,res)=>{
-    res.json({
-        message : "Massagereservation api is ready to serve u"
-    });
+     res.setHeader('Content-Type', 'text/html');
+     res.send(homepage);
 })
 
 // app routing
