@@ -36,7 +36,4 @@ const ReservationSchema = new mongoose.Schema({
     toObject:{virtuals:true}
 });
 
-// 3 propoties combine must be unique
-ReservationSchema.index({ reserver_email: 1, massageshop_name: 1, date: 1 }, { unique: true });
-
 module.exports =  {Reservation : mongoose.model('Reservation' , ReservationSchema) , ReservationSchema};

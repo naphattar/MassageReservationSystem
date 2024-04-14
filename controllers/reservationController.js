@@ -1,6 +1,7 @@
 const {Reservation} = require("../models/Reservation");
 const {MassageShop} = require("../models/MassageShop");
 const {countUserReservationByUserEmail, checkReservationTime}= require("../utills/reservationUtill");
+const { checkTimeFormat } = require("../utills/timeUtill");
 
 //@desc login user reserve a massageshop
 //@route POST /api/v1/reservation/
@@ -24,6 +25,14 @@ exports.createReservation = async(req,res,next)=>{
         });
         return;
     }
+    // validate opentime and closetime 
+    if(!(checkTimeFormat(start_time) && checkTimeFormat(end_time))){
+        res.status(400).json({
+            success : false,
+            message : "invalid start_time or end_time"
+        });
+        return;
+    }
     // check user's reservation count
     const counts = countUserReservationByUserEmail(user.email);
     if(counts > 3){
@@ -34,7 +43,7 @@ exports.createReservation = async(req,res,next)=>{
         return;
     }
     // check the massageshop_name 
-    const massageshop = await MassageShop.findOne({ massageshop_name: massageshop_name });
+    const massageshop = await MassageShop.findOne({name: massageshop_name });
     if(!massageshop){
         res.status(400).json({
             success : false,
@@ -43,22 +52,23 @@ exports.createReservation = async(req,res,next)=>{
         return;
     }
     // check the starttime and endtime 
-    if(!checkReservationTime(startTime,endTime,massageshop)){
+    if(!checkReservationTime(start_time,end_time,massageshop)){
         res.status(400).json({
             success : false,
             message : `Massageshop : ${massageshop_name} is not available in this reservation time`
         });
         return;
     };
+    // validate reservation_date e.g., 'YYYY-MM-DD
+    const isValidDate = !isNaN(Date.parse(reservation_date));
+    if (!isValidDate) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid date format for reservation_date"
+        });
+    }
+
     try{
-        // validate reservation_date e.g., 'YYYY-MM-DD
-        const isValidDate = !isNaN(Date.parse(reservation_date));
-        if (!isValidDate) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid date format for reservation_date"
-            });
-        }
         // create new reservation
         const reservation = await Reservation.create({
             reserver_email : user.email,

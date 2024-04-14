@@ -13,6 +13,7 @@ const connectDB = require("./config/db");
 // import routers
 const userRouter = require("./routes/user");
 const reservationRouter = require("./routes/reservation");
+const massageshopRouter = require("./routes/massageshop");
 
 dotenv.config({"path":'./config/config.env'})
 
@@ -45,6 +46,7 @@ app.get('/',(_,res)=>{
 // app routing
 app.use("/api/v1/user",userRouter);
 app.use("/api/v1/reservation",reservationRouter);
+app.use("/api/v1/massageshop",massageshopRouter);
 
 const PORT = process.env.PORT || 5000
 const server = app.listen(PORT , console.log('Server is running in' , process.env.NODE_ENV , 'mode on port' , process.env.PORT));
