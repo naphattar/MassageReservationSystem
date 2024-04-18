@@ -92,3 +92,77 @@ exports.createReservation = async(req,res,next)=>{
         console.log(err.stack);
     }
 };
+
+exports.getReservations = async(req,res,next) => {
+    let query;
+
+
+    //Copy req.query
+    const reqQuery = {...req.query}
+    
+    const removeFields = ['select' , 'sort']
+
+    removeFields.forEach(param=> delete reqQuery[param])
+
+    let queryStr = JSON.stringify(reqQuery)
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,match=>`$${match}`)
+    query = Reservation.find(JSON.parse(queryStr))
+    if(req.user.role != 'admin'){
+        query = query.find({reserver_email:req.user.email})
+    }
+    if(req.query.select){
+        const fields = req.query.select.split(',').join(' ')
+        query = query.select(fields)
+    }
+    if(req.query.sort){
+        const sortBy = req.query.sort.split(',').join(' ')
+        query = query.sort(sortBy)
+    }else{
+        query = query.sort('-createAt')
+    }
+    
+
+    try{
+        const reservations = await query
+        res.status(200).json({success:true , count:reservations.length , data : reservations})
+    } catch(err){
+        res.status(400).json({success:false})
+    }
+}
+exports.updateReservation = async(req,res,next) =>{
+    try{
+        let reservation = await Reservation.findById(req.params.id)
+        if(!reservation){
+            res.status(400).json({sucess:false})
+        }
+        if(reservation.reserver_email !== req.user.email){
+            res.status(401).json({success:false , msg:"User not authorized to this reservation"})
+        }
+        reservation = await Reservation.findByIdAndUpdate(req.params.id , req.body,{
+            new : true,
+            runValidators:true 
+        })
+        
+        res.status(200).json({sucess:true , msg:`Update reservation ${req.params.id}` , data:reservation})
+        
+    }catch(err){
+        res.status(400).json({sucess:false})
+    }
+}
+exports.deleteReservation = async(req,res,next) =>{
+    try{
+        const reservation = await Reservation.findById(req.params.id)
+        if(!reservation){
+            res.status(400).json({sucess:false})
+        }
+        if(reservation.reserver_email !== req.user.email){
+            res.status(401).json({success:false , msg:"User not authorized to this reservation"})
+        }else{
+            await reservation.deleteOne();
+            res.status(200).json({sucess:true , msg:`Delete reservation ${req.params.id}`,data:{}})    
+        }
+    }catch(err){
+        console.log(err)
+        res.status(400).json({sucess:false})
+    }
+}

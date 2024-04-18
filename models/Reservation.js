@@ -36,4 +36,9 @@ const ReservationSchema = new mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+ReservationSchema.pre("deleteOne", { document: true ,query:false} , async function(next){
+    console.log(`Reservation begin removed ${this._id}`)
+    next();
+});
+
 module.exports =  {Reservation : mongoose.model('Reservation' , ReservationSchema) , ReservationSchema};

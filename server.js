@@ -8,7 +8,7 @@ const {xss}=require('express-xss-sanitizer')
 const rateLimit=require('express-rate-limit');
 const hpp=require('hpp')
 const connectDB = require("./config/db");
-const homepage = require("./mocks/homepage");
+const homepage = require("./mocks/homepage"); 
 
 
 // import routers

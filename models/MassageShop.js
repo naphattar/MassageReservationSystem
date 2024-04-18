@@ -44,5 +44,9 @@ const MassageShopSchema = new mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+MassageShopSchema.pre("deleteOne", { document: true ,query:false} , async function(next){
+    console.log(`Reservation begin removed from MassageShop ${this._id}`)
+    next();
+});
 
 module.exports = {MassageShop : mongoose.model('MassageShop' , MassageShopSchema),MassageShopSchema};
