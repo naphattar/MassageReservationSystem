@@ -7,7 +7,7 @@ const isTimeGreater = (time1, time2)  => {
     const date1 = new Date(2000, 0, 1, hours1, minutes1);
     const date2 = new Date(2000, 0, 1, hours2, minutes2);
 
-    return date1 >= date2;
+    return date1 >= date2; 
 }
 
 // check Time format in "HH-MM"

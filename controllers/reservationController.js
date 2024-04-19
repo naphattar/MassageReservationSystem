@@ -135,14 +135,14 @@ exports.updateReservation = async(req,res,next) =>{
         if(!reservation){
             res.status(400).json({sucess:false})
         }
-        if(reservation.reserver_email !== req.user.email){
+        if(req.user.role !== 'admin' && reservation.reserver_email !== req.user.email){
             res.status(401).json({success:false , msg:"User not authorized to this reservation"})
         }
         reservation = await Reservation.findByIdAndUpdate(req.params.id , req.body,{
             new : true,
             runValidators:true 
         })
-        
+           
         res.status(200).json({sucess:true , msg:`Update reservation ${req.params.id}` , data:reservation})
         
     }catch(err){
@@ -155,7 +155,7 @@ exports.deleteReservation = async(req,res,next) =>{
         if(!reservation){
             res.status(400).json({sucess:false})
         }
-        if(reservation.reserver_email !== req.user.email){
+        if(req.user.role !== 'admin' && reservation.reserver_email !== req.user.email){
             res.status(401).json({success:false , msg:"User not authorized to this reservation"})
         }else{
             await reservation.deleteOne();
