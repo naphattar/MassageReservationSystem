@@ -120,7 +120,6 @@ exports.getReservations = async(req,res,next) => {
     }else{
         query = query.sort('-createAt')
     }
-    
 
     try{
         const reservations = await query
@@ -129,11 +128,30 @@ exports.getReservations = async(req,res,next) => {
         res.status(400).json({success:false})
     }
 }
+
+exports.getReservation = async(req,res,next) =>{
+    try{
+        const reservation = await Reservation.findById(req.params.id);
+        if (!reservation){
+            return res.status(400).json({
+                success : false
+            });
+        }
+        res.status(200).json({
+            success : true,
+            data : reservation
+        });
+    }catch(err){
+        res.status(400).json({
+            success : false,
+        });
+    }
+}
 exports.updateReservation = async(req,res,next) =>{
     try{
         let reservation = await Reservation.findById(req.params.id)
         if(!reservation){
-            res.status(400).json({sucess:false})
+            res.status(400).json({success:false})
         }
         if(req.user.role !== 'admin' && reservation.reserver_email !== req.user.email){
             res.status(401).json({success:false , msg:"User not authorized to this reservation"})
@@ -143,26 +161,26 @@ exports.updateReservation = async(req,res,next) =>{
             runValidators:true 
         })
            
-        res.status(200).json({sucess:true , msg:`Update reservation ${req.params.id}` , data:reservation})
+        res.status(200).json({success:true , msg:`Update reservation ${req.params.id}` , data:reservation})
         
     }catch(err){
-        res.status(400).json({sucess:false})
+        res.status(400).json({success:false})
     }
 }
 exports.deleteReservation = async(req,res,next) =>{
     try{
         const reservation = await Reservation.findById(req.params.id)
         if(!reservation){
-            res.status(400).json({sucess:false})
+            res.status(400).json({success:false})
         }
         if(req.user.role !== 'admin' && reservation.reserver_email !== req.user.email){
             res.status(401).json({success:false , msg:"User not authorized to this reservation"})
         }else{
             await reservation.deleteOne();
-            res.status(200).json({sucess:true , msg:`Delete reservation ${req.params.id}`,data:{}})    
+            res.status(200).json({success:true , msg:`Delete reservation ${req.params.id}`,data:{}})    
         }
     }catch(err){
         console.log(err)
-        res.status(400).json({sucess:false})
+        res.status(400).json({success:false})
     }
 }

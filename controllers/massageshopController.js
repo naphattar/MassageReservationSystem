@@ -40,7 +40,7 @@ exports.createMassageshop = async(req,res) =>{
     }
 };
 
-exports.getMassageshop = async(req,res,next) => {
+exports.getMassageshops = async(req,res,next) => {
     let query;
 
 
@@ -65,8 +65,6 @@ exports.getMassageshop = async(req,res,next) => {
     }else{
         query = query.sort('-createAt')
     }
-
-
     try{
         const massageshop = await query
         res.status(200).json({success:true , count:massageshop.length , data : massageshop})
@@ -74,6 +72,27 @@ exports.getMassageshop = async(req,res,next) => {
         res.status(400).json({success:false})
     }
 }
+
+
+exports.getMassageshop = async(req,res,next) =>{
+    try{
+        const massageshop = await MassageShop.findById(req.params.id);
+        if (!massageshop){
+            return res.status(400).json({
+                success : false
+            });
+        }
+        res.status(200).json({
+            success : true,
+            data : massageshop
+        });
+    }catch(err){
+        res.status(400).json({
+            success : false,
+        })
+    }
+}
+
 exports.updateMassageshop = async(req,res,next) =>{
     try{
         
@@ -82,25 +101,25 @@ exports.updateMassageshop = async(req,res,next) =>{
             runValidators:true 
         })
         if(!massageshop){
-            res.status(400).json({sucess:false})
+            res.status(400).json({success:false})
         }
         
-        res.status(200).json({sucess:true , msg:`Update massageshop ${req.params.id}` , data:massageshop})
+        res.status(200).json({success:true , msg:`Update massageshop ${req.params.id}` , data:massageshop})
         
     }catch(err){
-        res.status(400).json({sucess:false})
+        res.status(400).json({success:false})
     }
 }
 exports.deleteMassageshop = async(req,res,next) =>{
     try{
         const massageshop = await MassageShop.findById(req.params.id)
         if(!massageshop){
-            res.status(400).json({sucess:false})
+            res.status(400).json({success:false})
         }
         await massageshop.deleteOne();
-        res.status(200).json({sucess:true , msg:`Delete massageshop ${req.params.id}`,data:{}})    
+        res.status(200).json({success:true , msg:`Delete massageshop ${req.params.id}`,data:{}})    
     }catch(err){
         console.log(err)
-        res.status(400).json({sucess:false})
+        res.status(400).json({success:false})
     }
 }
