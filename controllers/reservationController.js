@@ -35,8 +35,8 @@ exports.createReservation = async(req,res,next)=>{
     }
     // check user's reservation count
     const counts = await countUserReservationByUserEmail(user.email);
-    console.log(counts)
-    if(counts > 3){
+
+    if(counts >= 3){
         res.status(401).json({
             success : false,
             message : `User : ${user.name} has alreadyed reserved up to maximum capacity reservation`
