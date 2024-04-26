@@ -35,7 +35,6 @@ exports.createReservation = async(req,res,next)=>{
     }
     // check user's reservation count
     const counts = await countUserReservationByUserEmail(user.email);
-
     if(counts >= 3){
         res.status(401).json({
             success : false,
@@ -137,6 +136,9 @@ exports.getReservation = async(req,res,next) =>{
             return res.status(400).json({
                 success : false
             });
+        }
+        if(req.user.role !== 'admin' && reservation.reserver_email !== req.user.email){
+            res.status(401).json({success:false , msg:"User not authorized to this reservation"})
         }
         res.status(200).json({
             success : true,
