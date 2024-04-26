@@ -119,6 +119,31 @@ exports.changePassword = async(req,res,next) =>{
     }
 };
 
+//@desc  update user
+//@route PUT /api/v1/user/change-info
+//@access Private
+exports.updateUser = async(req,res,next) =>{
+    try{
+        const userId = req.user.id;
+        const updateUser = await User.findByIdAndUpdate(
+            userId , 
+            req.body,{
+            new : true,
+            runValidators:true 
+        })
+        res.status(200).json({
+            success : true,
+            message : "Update user success",
+            data : updateUser
+        })
+    }catch(err){
+        res.status(401).json({
+            success : false,
+            message : `change user info failed with error ${err.message}`
+        })
+    }
+};
+
 exports.getMe = async(req,res,next) =>{
     const user = await User.findById(req.user.id);
     res.status(200).json({

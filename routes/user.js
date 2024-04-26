@@ -1,8 +1,9 @@
-const {register ,login , getMe , logout, changePassword} = require("../controllers/userController");
-const { protect } = require("../middlewares/auth");
+const {register ,login , getMe , logout, changePassword, updateUser} = require("../controllers/userController");
+const { protect ,authorize} = require("../middlewares/auth");
 
 const router = require("express").Router();
 
+router.put("/change-info",protect,authorize('admin','user'),updateUser)
 router.post("/register",register);
 router.post("/login",login)
 router.patch("/change-password",changePassword);
