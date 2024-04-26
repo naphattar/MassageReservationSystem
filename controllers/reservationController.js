@@ -34,7 +34,8 @@ exports.createReservation = async(req,res,next)=>{
         return;
     }
     // check user's reservation count
-    const counts = countUserReservationByUserEmail(user.email);
+    const counts = await countUserReservationByUserEmail(user.email);
+    console.log(counts)
     if(counts > 3){
         res.status(401).json({
             success : false,
