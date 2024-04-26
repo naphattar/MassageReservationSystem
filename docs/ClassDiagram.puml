@@ -56,7 +56,7 @@ package "Massage Reservation"{
     }
 
     class "<<Resource>>\nChangePassword" as ResourceChangePassword{
-        <<POST>> +changePassword(): Token
+        <<PATCH>> +changePassword(): Token
     }
 
     class "<<Resource>>\nLogout" as ResourceLogout{

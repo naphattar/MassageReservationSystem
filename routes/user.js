@@ -5,7 +5,7 @@ const router = require("express").Router();
 
 router.post("/register",register);
 router.post("/login",login)
-router.post("/change-password",changePassword);
+router.patch("/change-password",changePassword);
 router.get("/me",protect,getMe);
 router.get("/logout",logout)
 

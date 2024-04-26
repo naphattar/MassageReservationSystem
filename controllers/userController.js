@@ -82,7 +82,7 @@ exports.login = async(req,res,next) =>{
 };
 
 //@desc  change password 
-//@route POST /api/v1/user/change-password
+//@route PATCH /api/v1/user/change-password
 //@access Public
 exports.changePassword = async(req,res,next) =>{
     try{
